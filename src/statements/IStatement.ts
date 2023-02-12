@@ -24,10 +24,8 @@ export abstract class BaseStatement implements IStatement {
     abstract isValidRecord(row: any): boolean;
     abstract makeRecord(row: any): AccountRecord;
 
-    field(row: any, col: number, defaultValue?: any, type?: FieldType): any {
-        if (Object.keys(row).length <= col)
-            return this.convertValue((defaultValue) ? defaultValue : '', type);
-        const val = row[Object.keys(row)[col]];
+    field(row: any, col: string|number, defaultValue?: any, type?: FieldType): any {
+        const val = row[col];
         return this.convertValue((val != '' || defaultValue == undefined) ? val : defaultValue, type);
     }
 

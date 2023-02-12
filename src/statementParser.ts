@@ -14,11 +14,11 @@ export type AccountMeta = {
 export class StatementParser implements IStatement {
 
 
-    readMeta(sheet: any[]): AccountMeta {
-        if (sheet[4].__EMPTY.indexOf('ameriabank.am') >= 0) {
+    readMeta(rows: any[]): AccountMeta {
+        if (rows[4].A.indexOf('ameriabank.am') >= 0) {
             return {
                 bank: StatementBank.AMERIA_BANK,
-                accountNumber: new AmeriaStatement().readAccountNumber(sheet)
+                accountNumber: new AmeriaStatement().readAccountNumber(rows)
             };
         }
         return {
