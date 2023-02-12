@@ -11,7 +11,6 @@ let PROJECT_ID = process.env["PROJECT_ID"] ?? '';
 let BUCKET_EMAIL_ATTACHMENT = process.env["BUCKET_EMAIL_ATTACHMENT"] ?? '';
 let TOPIC_COST_STORE = process.env["TOPIC_COST_STORE"] ?? '';
 
-
 const port = 3000;
 const statementParser = new StatementParser();
 const fileParser = new FileParser();

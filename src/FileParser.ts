@@ -9,6 +9,7 @@ export type StatementFile = {
 
 export class FileParser {
     isXlsx(file: StatementFile) {
+        console.log(file);
         return (file.name.endsWith('xlsx'))
     }
 }
