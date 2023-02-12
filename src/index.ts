@@ -43,7 +43,7 @@ app.post('/parse', (req: Request, res: Response) => {
     event.files.forEach(async it => {
         if (fileParser.isXlsx(it)) {
             const buffer = await storageControl.downloadToBuffer(it.name);
-            handleAttachment(buffer, event);
+            await handleAttachment(buffer, event);
         }
     });
     res.status(204).send()
@@ -53,11 +53,11 @@ app.get('/', (req: Request, res: Response) => {
     res.send('EMAIL PARSER Server');
 });
 
-function handleAttachment(file: Buffer, event: EventType) {
+async function handleAttachment(file: Buffer, event: EventType) {
     const [meta, sheet] = xlsxHelper.read(file.buffer);
 
-    statementParser.readAll(sheet).forEach(it => {
-        eventBus.publish(TOPIC_COST_STORE, {
+    await Promise.all(statementParser.readAll(sheet).map(async it => {
+        await eventBus.publish(TOPIC_COST_STORE, {
             mail: {
                 from: event.fields.from,
                 to: event.fields.to,
@@ -66,7 +66,10 @@ function handleAttachment(file: Buffer, event: EventType) {
             meta: meta,
             record: it
         }, {});
-    })
+    }));
+
+
+
 }
 
 app.listen(port, () => {
