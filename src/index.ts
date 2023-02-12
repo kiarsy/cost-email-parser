@@ -21,7 +21,7 @@ const storageControl = new StorageControl(PROJECT_ID, BUCKET_EMAIL_ATTACHMENT);
 const app: Express = express();
 app.use(bodyParser.json())
 
-app.post('/parse', (req: Request, res: Response) => {
+app.post('/parse', async (req: Request, res: Response) => {
     // parse body
     if (!req.body) {
         const msg = "no Pub/Sub message received";
@@ -40,12 +40,14 @@ app.post('/parse', (req: Request, res: Response) => {
     const originatorMessage = Buffer.from(pubSubMessage.data, "base64").toString().trim();
     const event: EventType = JSON.parse(originatorMessage);
 
-    event.files.forEach(async it => {
+
+    await Promise.all(event.files.map(async (it) => {
         if (fileParser.isXlsx(it)) {
             const buffer = await storageControl.downloadToBuffer(it.name);
             await handleAttachment(buffer, event);
         }
-    });
+    }));
+
     res.status(204).send()
 });
 
