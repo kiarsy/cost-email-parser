@@ -17,6 +17,7 @@ export abstract class BaseStatement implements IStatement {
     readAll(sheet: any[]): AccountRecord[] {
         const statementRecords = sheet.filter(this.isValidRecord.bind(this))
         const records: AccountRecord[] = statementRecords.map(this.makeRecord.bind(this));
+        console.log("STATEMENT RECORDS:", records.length)
         return records;
     }
 

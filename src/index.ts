@@ -40,7 +40,6 @@ app.post('/parse', async (req: Request, res: Response) => {
     const originatorMessage = Buffer.from(pubSubMessage.data, "base64").toString().trim();
     const event: EventType = JSON.parse(originatorMessage);
 
-
     await Promise.all(event.files.map(async (it) => {
         if (fileParser.isXlsx(it)) {
             const buffer = await storageControl.downloadToBuffer(it.name);
@@ -59,6 +58,7 @@ async function handleAttachment(file: Buffer, event: EventType) {
     const [meta, sheet] = xlsxHelper.read(file.buffer);
 
     await Promise.all(statementParser.readAll(sheet).map(async it => {
+        console.log("EVENT SEND")
         await eventBus.publish(TOPIC_COST_STORE, {
             mail: {
                 from: event.fields.from,
