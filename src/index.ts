@@ -58,7 +58,16 @@ async function handleAttachment(file: Buffer, event: EventType) {
     const [meta, sheet] = xlsxHelper.read(file.buffer);
 
     await Promise.all(statementParser.readAll(sheet).map(async it => {
-        
+
+        console.log("Event Send:", {
+            mail: {
+                from: event.fields.from,
+                to: event.fields.to,
+                id: event.fields.email_id
+            },
+            meta: meta,
+            record: it
+        })
         await eventBus.publish(TOPIC_COST_STORE, {
             mail: {
                 from: event.fields.from,
