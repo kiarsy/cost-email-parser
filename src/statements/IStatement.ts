@@ -17,7 +17,7 @@ export abstract class BaseStatement implements IStatement {
     readAll(sheet: any[]): AccountRecord[] {
         const statementRecords = sheet.filter(this.isValidRecord.bind(this))
         const records: AccountRecord[] = statementRecords.map(this.makeRecord.bind(this));
-        console.log("STATEMENT RECORDS:", records.length)
+
         return records;
     }
 
@@ -33,7 +33,14 @@ export abstract class BaseStatement implements IStatement {
         if (!type)
             return value;
         if (type == FieldType.MoneyAmount) {
-            value = String(value).replace(/\ /g, '').replace('-', '').replace('+', '').replace(',', '.');
+            const splitter = /(.)\d{2}$/g.exec(value);
+            let splitterChar = ''
+            if (splitter)
+                splitterChar = splitter[1];
+            value = String(value).replace(/\ /g, '').replace('-', '').replace('+', '');
+            value = value.replace(splitterChar, 'X');
+            value = value.replace(',', '');
+            value = value.replace('X', '.');
             value = parseFloat(value);
         }
         if (type == FieldType.Number) {

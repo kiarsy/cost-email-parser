@@ -12,7 +12,7 @@ export class FieldDetector {
         if (/^\d{2}\.\d{2}\.\d{4}$/.test(value)) {
             return FieldType.Date;
         }
-        else if (/^((\+|\-)?\ )?(\d+\ ?)+(\,\d+)?$/.test(value)) {
+        else if (/^(\+|\-)?(\s){0,1}(((\d)+(\,|\s){0,1}))+(\.|\,)?(\d){0,2}$/.test(value)) {
             return FieldType.MoneyAmount;
         }
         else if (/^(\d+\ ?)+$/.test(value)) {

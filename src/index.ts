@@ -58,7 +58,7 @@ async function handleAttachment(file: Buffer, event: EventType) {
     const [meta, sheet] = xlsxHelper.read(file.buffer);
 
     await Promise.all(statementParser.readAll(sheet).map(async it => {
-        console.log("EVENT SEND")
+        
         await eventBus.publish(TOPIC_COST_STORE, {
             mail: {
                 from: event.fields.from,
@@ -69,10 +69,11 @@ async function handleAttachment(file: Buffer, event: EventType) {
             record: it
         }, {});
     }));
-
-
-
 }
+// import fs from 'fs'
+// const file = fs.readFileSync('/Users/kiarsy/Downloads/STATEMENT\ 04.01.2023-01.02.2023\ CARD\ MC\ 3943\ AMD\ \(1\).xlsx')
+// const file = fs.readFileSync('/Users/kiarsy/Downloads/STATEMENT 01.11.2022-30.11.2022 CARD ARCA AMD xxxxxxxxxxxx1519.xlsx')
+// handleAttachment(file, {} as any);
 
 app.listen(port, () => {
     console.log(`[server]: Server new is running at http://localhost:${port}`);
