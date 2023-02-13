@@ -55,11 +55,14 @@ export abstract class BaseStatement implements IStatement {
             value = value.replace('X', '.');
             value = parseFloat(value);
         }
-        if (type == FieldType.Number) {
+        else if (type == FieldType.Number) {
             value = String(value).replace(/\ /g, '').replace(',', '');
             value = parseFloat(value);
         }
-
+        else if (type == FieldType.Date) {
+            value = String(value).replace(/\./g, '/')
+            value = value;
+        }
         return value;
     }
 

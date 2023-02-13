@@ -29,7 +29,7 @@ export class AmeriaStatement extends BaseStatement {
             credit: this.field(row, 'D', 0, FieldType.MoneyAmount),
             debit: this.field(row, 'F', 0, FieldType.MoneyAmount),
             currency: this.field(row, 'C'),
-            date: this.field(row, 'A'),
+            date: this.field(row, 'A','',FieldType.Date),
             description: this.field(row, 'O'),
         }
     }

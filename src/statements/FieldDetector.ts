@@ -1,11 +1,12 @@
 
 export enum FieldType {
-    Date,
-    Currency,
-    MoneyAmount,
-    Number,
-    UNKNOWN
+    Date = 1,
+    Currency =2,
+    MoneyAmount =3,
+    Number =4,
+    UNKNOWN = -100
 }
+
 export class FieldDetector {
 
     detect(value: string): FieldType {
