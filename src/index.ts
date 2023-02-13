@@ -62,7 +62,6 @@ async function handleAttachment(file: Buffer, event: PublishedEventType) {
     const sheet = xlsxHelper.read(file.buffer);
 
     const meta = statementParser.readMeta(sheet);
-    console.log("meta:", meta)
     await Promise.all(statementParser.readAll(sheet).map(async it => {
         const recordEvent: EventType = {
             mail: {
@@ -82,7 +81,7 @@ async function handleAttachment(file: Buffer, event: PublishedEventType) {
 }
 
 // import fs from 'fs'
-// const file = fs.readFileSync('/Users/kiarsy/Downloads/STATEMENT\ 04.01.2023-01.02.2023\ CARD\ MC\ 3943\ AMD\ \(1\).xlsx')
+// const file = fs.readFileSync('/Users/kiarsy/Downloads/STATEMENT 04.12.2022-03.01.2023 CARD MC 3943 AMD (1).xlsx')
 // const file = fs.readFileSync('/Users/kiarsy/Downloads/STATEMENT 01.11.2022-30.11.2022 CARD ARCA AMD xxxxxxxxxxxx1519.xlsx')
 // const file = fs.readFileSync('/Users/kiarsy/Downloads/STATEMENT 18.11.2022-18.12.2022 DD 001 AMD.xlsx')
 // handleAttachment(file, {} as any);

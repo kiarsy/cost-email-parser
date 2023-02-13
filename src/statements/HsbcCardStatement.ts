@@ -6,7 +6,7 @@ export class HsbcCardStatement extends BaseStatement {
     bank: StatementBank = StatementBank.HSBC_BANK_ARMENIA_CARD;
 
     static isType(sheet: any[]): boolean {
-        return sheet[3].B?.indexOf('HSBC Bank Armenia') >= 0 && sheet[1].M?.indexOf('Card Account Statement') == 0;
+        return sheet[3].B?.indexOf('HSBC Bank Armenia') >= 0 && sheet[0].D?.indexOf('Card Account Statement') == 0;
     }
 
     readAccountNumber(rows: any[]): string {
