@@ -1,5 +1,3 @@
-import { Files } from 'formidable'
-
 export type StatementFile = {
     name: string;
     size: number;

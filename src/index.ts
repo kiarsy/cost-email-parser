@@ -1,22 +1,23 @@
 import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser'
-import { EventType } from './EventType';
+import { EventType, PublishedEventType } from './EventType';
 import { StatementParser } from './statementParser'
 import { FileParser } from './FileParser'
 import { StorageControl } from './StorageControl'
-import { EventBus } from './EventBus'
 import { XlsxHelper } from './XlsxHelper'
+import { PrismaHelper } from './PrismaHelper';
 
 let PROJECT_ID = process.env["PROJECT_ID"] ?? '';
 let BUCKET_EMAIL_ATTACHMENT = process.env["BUCKET_EMAIL_ATTACHMENT"] ?? '';
-let TOPIC_COST_STORE = process.env["TOPIC_COST_STORE"] ?? '';
+// let TOPIC_COST_STORE = process.env["TOPIC_COST_STORE"] ?? '';
 
 const port = 3000;
 const statementParser = new StatementParser();
 const fileParser = new FileParser();
 const xlsxHelper = new XlsxHelper();
-const eventBus = new EventBus(PROJECT_ID);
+
 const storageControl = new StorageControl(PROJECT_ID, BUCKET_EMAIL_ATTACHMENT);
+const prismaHandle = new PrismaHelper();
 
 const app: Express = express();
 app.use(bodyParser.json())
@@ -38,7 +39,7 @@ app.post('/parse', async (req: Request, res: Response) => {
     // parse message
     const pubSubMessage = req.body.message;
     const originatorMessage = Buffer.from(pubSubMessage.data, "base64").toString().trim();
-    const event: EventType = JSON.parse(originatorMessage);
+    const event: PublishedEventType = JSON.parse(originatorMessage);
 
     await Promise.all(event.files.map(async (it) => {
         if (fileParser.isXlsx(it)) {
@@ -54,29 +55,26 @@ app.get('/', (req: Request, res: Response) => {
     res.send('EMAIL PARSER Server');
 });
 // a08e8e81-6aa7-4327-8ceb-053f479e9ae3.2@dev.hoory-mail.com
-async function handleAttachment(file: Buffer, event: EventType) {
+async function handleAttachment(file: Buffer, event: PublishedEventType) {
     const [meta, sheet] = xlsxHelper.read(file.buffer);
 
     await Promise.all(statementParser.readAll(sheet).map(async it => {
 
-        console.log("Event Send:", {
+        const recordEvent: EventType = {
             mail: {
                 from: event.fields.from,
                 to: event.fields.to,
                 id: event.fields.email_id
             },
             meta: meta,
-            record: it
-        })
-        await eventBus.publish(TOPIC_COST_STORE, {
-            mail: {
-                from: event.fields.from,
-                to: event.fields.to,
-                id: event.fields.email_id
-            },
-            meta: meta,
-            record: it
-        }, {});
+            record: {
+                ...it,
+                credit: Number(it.credit),
+                debit: Number(it.debit),
+            }
+        };
+        console.log("Event Send:", event)
+        prismaHandle.handle(recordEvent);
     }));
 }
 // import fs from 'fs'
