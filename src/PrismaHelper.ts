@@ -51,7 +51,7 @@ export class PrismaHelper
             //     // P2022: Unique constraint failed
             //     // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
             if (e.code === 'P2002') {
-                // console.error('The character already exists', e)
+                console.error('The Record already exists', e)
                 // throw new RedwoodError('The character already exists')
             }
             // }

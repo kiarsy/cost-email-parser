@@ -5,7 +5,9 @@ COPY package.json .
 RUN npm i
 
 COPY ./src ./src
+COPY ./prisma ./prisma
 COPY tsconfig.json .
+RUN npm run prisma:generate
 RUN npm run build
 # Build production image
 FROM builder as runner

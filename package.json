@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "npx jest",
-    "build": "prisma generate && ./node_modules/typescript/bin/tsc",
+    "build": "./node_modules/typescript/bin/tsc",
     "prisma:migrate": "npx prisma migrate dev",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "./node_modules/.bin/prisma generate",
     "start": "node build/index.js",
     "start-dev": "ts-node ./src/index.ts"
   },
