@@ -77,7 +77,7 @@ async function handleAttachment(file: Buffer, event: PublishedEventType) {
                 debit: Number(it.debit),
             }
         };
-        prismaHandle.handle(recordEvent);
+        await prismaHandle.handle(recordEvent);
     }));
 }
 
