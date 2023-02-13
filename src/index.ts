@@ -51,15 +51,16 @@ app.post('/parse', async (req: Request, res: Response) => {
     res.status(204).send()
 });
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('EMAIL PARSER Server');
+app.get('/', async (req: Request, res: Response) => {
+    const x = await prismaHandle.prisma.user.count()
+    res.send('EMAIL PARSER Server:' + x);
 });
 // a08e8e81-6aa7-4327-8ceb-053f479e9ae3.2@dev.hoory-mail.com
 async function handleAttachment(file: Buffer, event: PublishedEventType) {
     const sheet = xlsxHelper.read(file.buffer);
 
     const meta = statementParser.readMeta(sheet);
-    console.log("meta:",meta)
+    console.log("meta:", meta)
     await Promise.all(statementParser.readAll(sheet).map(async it => {
         const recordEvent: EventType = {
             mail: {
