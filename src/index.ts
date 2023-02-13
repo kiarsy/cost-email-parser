@@ -53,7 +53,7 @@ app.post('/parse', async (req: Request, res: Response) => {
 app.get('/', (req: Request, res: Response) => {
     res.send('EMAIL PARSER Server');
 });
-
+// a08e8e81-6aa7-4327-8ceb-053f479e9ae3.2@dev.hoory-mail.com
 async function handleAttachment(file: Buffer, event: EventType) {
     const [meta, sheet] = xlsxHelper.read(file.buffer);
 
