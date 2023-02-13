@@ -25,7 +25,6 @@ export class HsbcAccountStatement extends BaseStatement {
     }
 
     makeRecord(row: any): AccountRecord {
-        console.log(row);
         return {
             credit: this.field(row, 'E', 0, FieldType.MoneyAmount),
             debit: this.field(row, 'F', 0, FieldType.MoneyAmount),

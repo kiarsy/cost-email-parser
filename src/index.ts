@@ -41,11 +41,9 @@ app.post('/parse', async (req: Request, res: Response) => {
     const originatorMessage = Buffer.from(pubSubMessage.data, "base64").toString().trim();
     const event: PublishedEventType = JSON.parse(originatorMessage);
 
-    console.log("event:", event);
     await Promise.all(event.files.map(async (it) => {
         if (fileParser.isXlsx(it)) {
             const buffer = await storageControl.downloadToBuffer(it.name);
-            console.log("Going to handle:", event);
             await handleAttachment(buffer, event);
         }
     }));
@@ -76,7 +74,6 @@ async function handleAttachment(file: Buffer, event: PublishedEventType) {
                 debit: Number(it.debit),
             }
         };
-        console.log("Event Send:", recordEvent)
         prismaHandle.handle(recordEvent);
     }));
 }
