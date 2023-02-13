@@ -43,6 +43,7 @@ export class PrismaHelper
                     accountId: account.id
                 }
             })
+            console.log("add one record");
         }
         catch (e: any) {
             // console.error(e, 'Error creating character')
