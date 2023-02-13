@@ -1,7 +1,7 @@
 import { assert } from "console";
 import { AmeriaStatement } from "../src/statements/AmeriaStatement";
-import { HsbcStatement } from "../src/statements/HsbcStatement";
-
+import { HsbcCardStatement } from "../src/statements/HsbcCardStatement";
+import { HsbcAccountStatement } from "../src/statements/HsbcAccountStatement";
 
 
 describe('Ameria Statement checker', () => {
@@ -140,8 +140,8 @@ describe('Ameria Statement checker', () => {
     });
 });
 
-describe('HSBC Statement checker', () => {
-    const statement = new HsbcStatement();
+describe('HSBC CARD Statement checker', () => {
+    const statement = new HsbcCardStatement();
     test('isValid = false ', () => {
         const row = {
             B: '04.01.2023',
@@ -207,6 +207,78 @@ describe('HSBC Statement checker', () => {
             I: '07.01.2023',
             J: '',
             K: 'Purchase transaction  \\ 00000001\\USA\\4029357733\\60\\PAYPAL *UDEMY'
+        };
+        let result = statement.isValidRecord(row);
+        expect(result).toBe(true);
+        let result2 = statement.makeRecord(row);
+        expect(result2.credit).toBe(0);
+        expect(result2.debit).toBe(4064.28);
+    });
+});
+
+describe('HSBC Account Statement checker', () => {
+    const statement = new HsbcCardStatement();
+    test('isValid = false ', () => {
+        const row = {
+            B: '04.01.2023',
+            C: '4,064.28',
+            D: 'AMD',
+            E: '',
+            F: '',
+            H: '',
+            I: '04.01.2023',
+            J: 'Hold \\ PAYPAL *UDEMY                            \\  4029357733 US'
+        };
+        let result = statement.isValidRecord(row);
+        expect(result).toBe(false);
+    });
+
+    test('isValid = true ', () => {
+        const row = {
+            B: '03.01.2023',
+            C: '4,064.28',
+            D: 'AMD',
+            E: '',
+            F: '-4,064.28',
+            H: '',
+            I: '07.01.2023',
+            J: 'Purchase transaction  \\ 00000001\\USA\\4029357733\\60\\PAYPAL *UDEMY'
+        };
+        let result = statement.isValidRecord(row);
+        expect(result).toBe(true);
+        let result2 = statement.makeRecord(row);
+        expect(result2.credit).toBe(0);
+        expect(result2.debit).toBe(4064.28);
+    });
+
+    test('isValid = true ', () => {
+        const row = {
+            B: '14.01.2023',
+            C: '100.00',
+            D: 'AMD',
+            E: '',
+            F: '-100.00',
+            H: '',
+            I: '15.01.2023',
+            J: 'Purchase transaction \\ 22533215\\AM\\YEREVAN\\UPAY  E-WALLE'
+        };
+        let result = statement.isValidRecord(row);
+        expect(result).toBe(true);
+        let result2 = statement.makeRecord(row);
+        expect(result2.credit).toBe(0);
+        expect(result2.debit).toBe(100.00);
+    });
+
+    test('isValid = true ', () => {
+        const row = {
+            B: '03.01.2023',
+            C: '4,064.28',
+            D: 'AMD',
+            E: '',
+            F: '-4,064.28',
+            H: '',
+            I: '07.01.2023',
+            J: 'Purchase transaction  \\ 00000001\\USA\\4029357733\\60\\PAYPAL *UDEMY'
         };
         let result = statement.isValidRecord(row);
         expect(result).toBe(true);

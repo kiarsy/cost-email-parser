@@ -1,7 +1,14 @@
+import { StatementBank } from "../statementParser";
 import { FieldType } from "./FieldDetector";
 import { AccountRecord, BaseStatement } from "./IStatement";
 
 export class AmeriaStatement extends BaseStatement {
+    bank: StatementBank = StatementBank.AMERIA_BANK;
+
+    static isType(sheet: any[]): boolean {
+        return sheet[4].A?.indexOf('ameriabank.am') >= 0;
+    }
+
     readAccountNumber(rows: any[]): string {
         return this.field(rows[2], 'Q', '0', FieldType.Number)
     }

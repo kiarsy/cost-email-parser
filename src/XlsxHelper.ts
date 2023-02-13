@@ -5,7 +5,7 @@ export class XlsxHelper {
 
     private statementParser = new StatementParser();
 
-    read(file: any): [AccountMeta, any[]] {
+    read(file: any): any[] {
         const workbook = XLSX.read(file, { type: "buffer" });
 
         var sheet_name_list = workbook.SheetNames;
@@ -13,10 +13,7 @@ export class XlsxHelper {
         delete x["!margins"];
         delete x["!merges"];
         delete x["!ref"];
-        const rows = this.convertTojson(x);
-
-        const meta = this.statementParser.readMeta(rows);
-        return [meta, rows]
+        return this.convertTojson(x);
     }
 
     private convertTojson(sheet: XLSX.WorkSheet) {

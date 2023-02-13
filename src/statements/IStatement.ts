@@ -1,3 +1,4 @@
+import { AccountMeta, StatementBank } from "../statementParser";
 import { FieldDetector, FieldType } from "./FieldDetector";
 
 export type AccountRecord = {
@@ -9,22 +10,33 @@ export type AccountRecord = {
 }
 export interface IStatement {
     readAll(sheet: any[]): AccountRecord[];
+    readMeta(sheet: any[]): AccountMeta;
 }
 
 export abstract class BaseStatement implements IStatement {
+
     fieldDetector = new FieldDetector();
+    abstract bank: StatementBank;
 
     readAll(sheet: any[]): AccountRecord[] {
         const statementRecords = sheet.filter(this.isValidRecord.bind(this))
         const records: AccountRecord[] = statementRecords.map(this.makeRecord.bind(this));
-
         return records;
     }
 
     abstract isValidRecord(row: any): boolean;
     abstract makeRecord(row: any): AccountRecord;
+    readMeta(sheet: any[]): AccountMeta {
+        return {
+            bank: this.bank,
+            accountNumber: this.readAccountNumber(sheet)
+        };
+    }
+    static isType(sheet: any[]): boolean {
+        return false;
+    }
 
-    field(row: any, col: string|number, defaultValue?: any, type?: FieldType): any {
+    field(row: any, col: string | number, defaultValue?: any, type?: FieldType): any {
         const val = row[col];
         return this.convertValue((val != '' || defaultValue == undefined) ? val : defaultValue, type);
     }
