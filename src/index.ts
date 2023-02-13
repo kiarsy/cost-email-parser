@@ -41,9 +41,11 @@ app.post('/parse', async (req: Request, res: Response) => {
     const originatorMessage = Buffer.from(pubSubMessage.data, "base64").toString().trim();
     const event: PublishedEventType = JSON.parse(originatorMessage);
 
+    console.log("event:", event);
     await Promise.all(event.files.map(async (it) => {
         if (fileParser.isXlsx(it)) {
             const buffer = await storageControl.downloadToBuffer(it.name);
+            console.log("Going to handle:", event);
             await handleAttachment(buffer, event);
         }
     }));
@@ -58,6 +60,7 @@ app.get('/', (req: Request, res: Response) => {
 async function handleAttachment(file: Buffer, event: PublishedEventType) {
     const [meta, sheet] = xlsxHelper.read(file.buffer);
 
+    console.log("meta:", meta);
     await Promise.all(statementParser.readAll(sheet).map(async it => {
 
         const recordEvent: EventType = {
