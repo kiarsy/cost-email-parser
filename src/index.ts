@@ -52,8 +52,10 @@ app.post('/parse', async (req: Request, res: Response) => {
 });
 
 app.get('/', async (req: Request, res: Response) => {
-    const x = await prismaHandle.prisma.user.count()
-    res.send('EMAIL PARSER Server:' + x);
+    const x = await prismaHandle.prisma.user.count();
+    let user = await prismaHandle.prisma.userEmails.findFirst({ where: { email: "hossein.kiarsy@gmail.com" } });
+
+    res.send('EMAIL PARSER Server:' + x + " " + user?.email);
 });
 // a08e8e81-6aa7-4327-8ceb-053f479e9ae3.2@dev.hoory-mail.com
 async function handleAttachment(file: Buffer, event: PublishedEventType) {

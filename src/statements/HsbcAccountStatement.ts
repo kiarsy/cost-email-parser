@@ -34,3 +34,4 @@ export class HsbcAccountStatement extends BaseStatement {
         }
     }
 }
+// postgresql://cost:Kia1990rsy@localhost/cost?schema=public&host=/cloudsql/sonic-cat-363104:us-central1:cost&connection_limit=5
